@@ -30,7 +30,6 @@
 #include "memzero.h"
 #include "options.h"
 #include "pbkdf2.h"
-#include "rand.h"
 #include "sha2.h"
 
 #if USE_BIP39_CACHE
@@ -45,8 +44,8 @@ static CONFIDENTIAL struct {
 } bip39_cache[BIP39_CACHE_SIZE];
 
 #endif
-
-const char *mnemonic_generate(int strength) {
+#if 0
+const char  *mnemonic_generate(int strength) {
   if (strength % 32 || strength < 128 || strength > 256) {
     return 0;
   }
@@ -56,10 +55,10 @@ const char *mnemonic_generate(int strength) {
   memzero(data, sizeof(data));
   return r;
 }
-
+#endif
 static CONFIDENTIAL char mnemo[24 * 10];
 
-const char *mnemonic_from_data(const uint8_t *data, int len) {
+const char  *mnemonic_from_data(const uint8_t *data, int len) {
   if (len % 4 || len < 16 || len > 32) {
     return 0;
   }
@@ -92,9 +91,9 @@ const char *mnemonic_from_data(const uint8_t *data, int len) {
   return mnemo;
 }
 
-void mnemonic_clear(void) { memzero(mnemo, sizeof(mnemo)); }
+void  mnemonic_clear(void) { memzero(mnemo, sizeof(mnemo)); }
 
-int mnemonic_to_entropy(const char *mnemonic, uint8_t *entropy) {
+int  mnemonic_to_entropy(const char *mnemonic, uint8_t *entropy) {
   if (!mnemonic) {
     return 0;
   }
@@ -158,7 +157,7 @@ int mnemonic_to_entropy(const char *mnemonic, uint8_t *entropy) {
   return n * 11;
 }
 
-int mnemonic_check(const char *mnemonic) {
+int  mnemonic_check(const char *mnemonic) {
   uint8_t bits[32 + 1];
   int seed_len = mnemonic_to_entropy(mnemonic, bits);
   if (seed_len != (12 * 11) && seed_len != (18 * 11) && seed_len != (24 * 11)) {
@@ -179,7 +178,7 @@ int mnemonic_check(const char *mnemonic) {
 }
 
 // passphrase must be at most 256 characters otherwise it would be truncated
-void mnemonic_to_seed(const char *mnemonic, const char *passphrase,
+void  mnemonic_to_seed(const char *mnemonic, const char *passphrase,
                       uint8_t seed[512 / 8],
                       void (*progress_callback)(uint32_t current,
                                                 uint32_t total)) {
@@ -228,4 +227,4 @@ void mnemonic_to_seed(const char *mnemonic, const char *passphrase,
 #endif
 }
 
-const char *const *mnemonic_wordlist(void) { return wordlist; }
+const char *const  *mnemonic_wordlist(void) { return wordlist; }
